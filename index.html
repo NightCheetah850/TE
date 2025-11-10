@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator QR Code Tanpa API</title>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <title>Generator Kode QR Universal</title>
     <style>
         * {
             margin: 0;
@@ -14,7 +13,8 @@
         }
         
         body {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            background-color: #121212;
+            color: #e0e0e0;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -23,171 +23,250 @@
         }
         
         .container {
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            padding: 30px;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             width: 100%;
             max-width: 500px;
+            padding: 30px;
             text-align: center;
+            border: 1px solid #333;
         }
         
         h1 {
-            color: #333;
-            margin-bottom: 20px;
+            color: #ffffff;
+            margin-bottom: 15px;
             font-weight: 600;
         }
         
-        .description {
-            color: #666;
+        p {
+            color: #b0b0b0;
             margin-bottom: 25px;
             line-height: 1.5;
         }
         
         .input-group {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             text-align: left;
         }
         
         label {
             display: block;
             margin-bottom: 8px;
-            color: #444;
+            color: #cccccc;
             font-weight: 500;
         }
         
-        input {
+        textarea {
             width: 100%;
             padding: 12px 15px;
-            border: 1px solid #ddd;
+            background-color: #2d2d2d;
+            border: 2px solid #444;
             border-radius: 8px;
             font-size: 16px;
+            color: #e0e0e0;
             transition: border-color 0.3s;
+            resize: vertical;
+            min-height: 100px;
         }
         
-        input:focus {
+        textarea:focus {
+            border-color: #4a90e2;
             outline: none;
-            border-color: #6a11cb;
-            box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.2);
         }
         
         button {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            background-color: #4a90e2;
             color: white;
             border: none;
             border-radius: 8px;
-            padding: 12px 20px;
+            padding: 12px 25px;
             font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            font-weight: 500;
+            transition: background-color 0.3s;
             width: 100%;
+            margin-bottom: 25px;
         }
         
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
-        .qr-container {
-            margin-top: 30px;
-            padding: 20px;
-            border-radius: 10px;
-            background-color: #f9f9f9;
-            display: none;
+            background-color: #3a7bc8;
         }
         
         #qrcode {
-            margin: 0 auto;
-            display: flex;
-            justify-content: center;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            display: inline-block;
+            max-width: 100%;
+            border: 1px solid #444;
+            position: relative;
         }
         
         .download-btn {
-            margin-top: 20px;
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            background-color: #2ecc71;
+            margin-top: 15px;
             display: none;
         }
         
+        .download-btn:hover {
+            background-color: #27ae60;
+        }
+        
         .footer {
-            margin-top: 25px;
+            margin-top: 20px;
             color: #888;
             font-size: 14px;
+        }
+        
+        .examples {
+            margin-top: 15px;
+            text-align: left;
+            background-color: #2d2d2d;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .examples h3 {
+            margin-bottom: 10px;
+            color: #cccccc;
+        }
+        
+        .examples ul {
+            padding-left: 20px;
+        }
+        
+        .examples li {
+            margin-bottom: 5px;
+        }
+        
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 10;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Generator QR Code</h1>
-        <p class="description">Masukkan URL atau teks di bawah ini untuk menghasilkan QR Code secara instan. Tidak diperlukan API eksternal!</p>
+        <h1>Generator Kode QR Universal</h1>
+        <p>Masukkan teks, URL, nomor telepon, atau informasi apa pun untuk menghasilkan kode QR</p>
         
         <div class="input-group">
-            <label for="url-input">URL atau Teks:</label>
-            <input type="text" id="url-input" placeholder="https://example.com" value="https://github.com">
+            <label for="text">Masukkan teks:</label>
+            <textarea id="text" placeholder="Masukkan URL, teks, nomor telepon, alamat email, atau informasi lainnya..." required></textarea>
         </div>
         
-        <button id="generate-btn">Buat QR Code</button>
+        <button id="generate-btn">Buat Kode QR</button>
         
-        <div class="qr-container" id="qr-container">
-            <h3>QR Code Anda:</h3>
-            <div id="qrcode"></div>
-            <button class="download-btn" id="download-btn">Unduh QR Code</button>
+        <div id="qrcode"></div>
+        
+        <button id="download-btn" class="download-btn">Unduh Kode QR</button>
+        
+        <div class="examples">
+            <h3>Contoh yang dapat digunakan:</h3>
+            <ul>
+                <li>URL: https://example.com</li>
+                <li>Teks biasa: Halo, dunia!</li>
+                <li>Nomor telepon: +62123456789</li>
+                <li>Alamat email: contoh@email.com</li>
+                <li>Wi-Fi: WIFI:S:NetworkName;T:WPA;P:Password;;</li>
+                <li>Koordinat: geo:40.748817,-73.985428</li>
+            </ul>
         </div>
         
-        <p class="footer">Dibuat dengan ❤️ menggunakan JavaScript</p>
+        <div class="footer">
+            <p>Kode QR yang dihasilkan dapat dipindai dengan aplikasi pemindai QR</p>
+        </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
-        document.getElementById('generate-btn').addEventListener('click', function() {
-            const urlInput = document.getElementById('url-input').value.trim();
+        document.addEventListener('DOMContentLoaded', function() {
+            const textInput = document.getElementById('text');
+            const generateBtn = document.getElementById('generate-btn');
+            const downloadBtn = document.getElementById('download-btn');
+            const qrcodeDiv = document.getElementById('qrcode');
             
-            if (!urlInput) {
-                alert('Silakan masukkan URL atau teks terlebih dahulu!');
-                return;
-            }
+            let qrcode = null;
             
-            // Bersihkan QR Code sebelumnya
-            document.getElementById('qrcode').innerHTML = '';
+            generateBtn.addEventListener('click', function() {
+                const text = textInput.value.trim();
+                
+                if (!text) {
+                    alert('Masukkan teks terlebih dahulu!');
+                    return;
+                }
+                
+                // Hapus QR code sebelumnya jika ada
+                qrcodeDiv.innerHTML = '';
+                
+                // Buat QR code baru dengan warna standar (hitam di atas putih)
+                qrcode = new QRCode(qrcodeDiv, {
+                    text: text,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#000000", // Warna hitam untuk kode QR
+                    colorLight: "#ffffff", // Warna putih untuk latar
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                
+                // Tambahkan watermark setelah QR code selesai dibuat
+                setTimeout(() => {
+                    const watermark = document.createElement('div');
+                    watermark.className = 'watermark';
+                    watermark.textContent = 'RHAMA';
+                    qrcodeDiv.appendChild(watermark);
+                }, 100);
+                
+                // Tampilkan tombol unduh
+                downloadBtn.style.display = 'block';
+            });
             
-            // Generate QR Code baru
-            QRCode.toCanvas(document.getElementById('qrcode'), urlInput, {
-                width: 200,
-                height: 200,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            }, function(error) {
-                if (error) {
-                    console.error(error);
-                    alert('Terjadi kesalahan saat membuat QR Code.');
-                } else {
-                    // Tampilkan container QR Code
-                    document.getElementById('qr-container').style.display = 'block';
-                    document.getElementById('download-btn').style.display = 'block';
+            downloadBtn.addEventListener('click', function() {
+                if (!qrcode) {
+                    alert('Buat kode QR terlebih dahulu!');
+                    return;
+                }
+                
+                const canvas = qrcodeDiv.querySelector('canvas');
+                if (canvas) {
+                    // Membuat canvas sementara untuk menggambar watermark
+                    const tempCanvas = document.createElement('canvas');
+                    const tempCtx = tempCanvas.getContext('2d');
+                    
+                    // Set ukuran canvas sementara
+                    tempCanvas.width = canvas.width;
+                    tempCanvas.height = canvas.height;
+                    
+                    // Salin QR code ke canvas sementara
+                    tempCtx.drawImage(canvas, 0, 0);
+                    
+                    // Tambahkan watermark
+                    tempCtx.font = 'bold 14px Arial';
+                    tempCtx.fillStyle = 'rgba(128, 128, 128, 0.7)';
+                    tempCtx.textAlign = 'center';
+                    tempCtx.textBaseline = 'middle';
+                    tempCtx.fillText('RHAMA', tempCanvas.width / 2, tempCanvas.height / 2);
+                    
+                    // Buat link untuk mengunduh
+                    const link = document.createElement('a');
+                    link.download = 'qrcode.png';
+                    link.href = tempCanvas.toDataURL('image/png');
+                    link.click();
                 }
             });
-        });
-        
-        document.getElementById('download-btn').addEventListener('click', function() {
-            const canvas = document.querySelector('#qrcode canvas');
-            if (canvas) {
-                const url = canvas.toDataURL('image/png');
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'qrcode.png';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            }
-        });
-        
-        // Generate QR Code otomatis saat halaman dimuat
-        window.addEventListener('load', function() {
-            document.getElementById('generate-btn').click();
         });
     </script>
 </body>
